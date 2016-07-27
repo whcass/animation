@@ -65,7 +65,7 @@ Circle.prototype.update = function () {
 //
 function createCircles() {
 // change the range of this loop to adjust the number of circles that you see
-    for (var i = 1; i < 2000; i++) {
+    for (var i = 1; i < 1500; i++) {
         var radius = 5 * Math.random();
         var initialX = canvasWidth / 2;
         var initialY = canvasHeight / 2;
@@ -94,7 +94,7 @@ function createCircles() {
     requestAnimationFrame(draw);
 }
 createCircles();
-var framesPerSecond = 30;
+var framesPerSecond = 60;
 
 function draw() {
     setTimeout(function () {
