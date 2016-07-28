@@ -26,7 +26,7 @@ solarsystem = {
 
     },
 
-    Planet: function (angle, sign, radius, rotationRadius, initialX, initialY, colour) {
+    Planet: function (angle, sign, radius, rotationRadius, initialX, initialY, colour, incrementer, orbiting) {
 
         this.angle = angle;
         this.sign = sign;
@@ -34,7 +34,8 @@ solarsystem = {
         this.rotationRadius = rotationRadius;
         this.initialX = initialX;
         this.initialY = initialY;
-        this.incrementer = .001 + Math.random() * .0005;
+        this.incrementer = typeof incrementer == 'undefined' ? .001 + Math.random() * .0005 : incrementer;
+        this.orbiting = typeof orbiting == 'undefined' ? '' : orbiting;
         this.colour = colour;
         /*this.incrementer = .001 + Math.random() * .0005;*/
     },
@@ -52,7 +53,7 @@ solarsystem = {
         );
         /*Mercury*/
         var mercury = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             2,
             80,
@@ -62,7 +63,7 @@ solarsystem = {
         );
         /*Venus*/
         var venus = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             3,
             100,
@@ -72,38 +73,69 @@ solarsystem = {
         );
         /*Earth*/
         var earth = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
-            4,
+            3,
             120,
             solarsystem.canvasWidth / 2,
             solarsystem.canvasHeight / 2,
             'rgb(0,0,0)'
         );
         solarsystem.planetsObj['earth'] = earth;
-/*            /!*The Moon*!/
-            var moon = new solarsystem.Planet(
-                2 * Math.PI,
-                1,
-                1,
-                10,
-                solarsystem.planetsObj['earth'].initialX+solarsystem.planetsObj['earth'].rotationRadius,
-                solarsystem.planetsObj['earth'].initialY+solarsystem.planetsObj['earth'].rotationRadius,
-                'rgb(255,0,0)'
-            );*/
+
+        /*The Moon*/
+        var moon = new solarsystem.Planet(
+            Math.random() * 2 * Math.PI,
+            1,
+            0.5,
+            5,
+            solarsystem.planetsObj['earth'].initialX,
+            solarsystem.planetsObj['earth'].initialY,
+            'rgb(255,0,0)',
+            solarsystem.planetsObj['earth'].incrementer*20,
+            'earth'
+        );
+        solarsystem.planetsObj['moon'] = moon;
         /*Mars*/
         var mars = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
-            4,
+            3,
             140,
             solarsystem.canvasWidth / 2,
             solarsystem.canvasHeight / 2,
             'rgb(0,0,0)'
         );
+        solarsystem.planetsObj['mars'] = mars;
+        /*Phobos*/
+        var phobos = new solarsystem.Planet(
+            Math.random() * 2 * Math.PI,
+            1,
+            0.5,
+            5,
+            solarsystem.planetsObj['mars'].initialX,
+            solarsystem.planetsObj['mars'].initialY,
+            'rgb(255,0,0)',
+            solarsystem.planetsObj['mars'].incrementer*15,
+            'mars'
+        );
+        /*Deimos*/
+        var deimos = new solarsystem.Planet(
+            Math.random() * 2 * Math.PI,
+            1,
+            0.5,
+            8,
+            solarsystem.planetsObj['mars'].initialX,
+            solarsystem.planetsObj['mars'].initialY,
+            'rgb(255,0,0)',
+            solarsystem.planetsObj['mars'].incrementer*20,
+            'mars'
+        );
+        solarsystem.planetsObj['phobos'] = phobos;
+        solarsystem.planetsObj['deimos'] = deimos;
         /*Jupiter*/
         var jupiter = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             20,
             200,
@@ -113,7 +145,7 @@ solarsystem = {
         );
         /*Saturn*/
         var saturn = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             10,
             275,
@@ -123,7 +155,7 @@ solarsystem = {
         );
         /*Uranus*/
         var uranus = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             10,
             325,
@@ -133,7 +165,7 @@ solarsystem = {
         );
         /*Neptune*/
         var neptune = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             10,
             375,
@@ -143,7 +175,7 @@ solarsystem = {
         );
         /*Pluto*/
         var pluto = new solarsystem.Planet(
-            2 * Math.PI,
+            Math.random() * 2 * Math.PI,
             1,
             0.5,
             475,
@@ -154,7 +186,7 @@ solarsystem = {
         solarsystem.planetsObj['sun'] = sun;
         solarsystem.planetsObj['mercury'] = mercury;
         solarsystem.planetsObj['venus'] = venus;
-        solarsystem.planetsObj['mars'] = mars;
+
         solarsystem.planetsObj['jupiter'] = jupiter;
         solarsystem.planetsObj['saturn'] = saturn;
         solarsystem.planetsObj['uranys'] = uranus;
@@ -164,20 +196,24 @@ solarsystem = {
 
     initUpdateFunc: function () {
         solarsystem.Planet.prototype.update = function () {
-
-
             this.angle += this.sign * this.incrementer;
 
-            this.currentX = this.initialX + this.rotationRadius * Math.cos(this.angle);
-            this.currentY = this.initialY + this.rotationRadius * Math.sin(this.angle);
-
-            if (this.angle >= (Math.PI * 2)) {
-                this.angle = 0;
-                this.incrementer = .001 + Math.random() * .0005;
-                /*this.incrementer = .001 + Math.random() * .0005;*/
+            if (this.orbiting !== '') {
+                this.currentX = solarsystem.planetsObj[this.orbiting].currentX + (this.rotationRadius) * (Math.cos(this.angle));
+                this.currentY = solarsystem.planetsObj[this.orbiting].currentY + (this.rotationRadius) * Math.sin(this.angle);
+            } else {
+                this.currentX = this.initialX + this.rotationRadius * Math.cos(this.angle);
+                this.currentY = this.initialY + this.rotationRadius * Math.sin(this.angle);
             }
 
+            /*if (this.angle >= (Math.PI * 2)) {
+             this.angle = 0;
+             this.incrementer = .001 + Math.random() * .0005;
+             /!*this.incrementer = .001 + Math.random() * .0005;*!/
+             }*/
+
             // The following code is responsible for actually drawing the circle on the screen
+            /*console.log(this);*/
             solarsystem.mainContext.beginPath();
             solarsystem.mainContext.arc(this.currentX, this.currentY, this.radius, 0, Math.PI * 2, false);
             solarsystem.mainContext.closePath();
