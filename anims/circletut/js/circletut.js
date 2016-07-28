@@ -73,7 +73,6 @@ function createCircles() {
         var angle = Math.random() * 2 * Math.PI;
         var index = Math.floor(Math.random()*colourPalette.length);
         var colour = colourPalette[index];
-        console.log(colour);
         var signHelper = Math.floor(Math.random() * 2);
         var sign;
         var up = false;
