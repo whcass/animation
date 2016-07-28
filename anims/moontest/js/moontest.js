@@ -67,9 +67,9 @@ moontest = {
         /*The Moon*/
         var moon = new moontest.Planet(
             2 * Math.PI,
-            1,
+            -1,
             2,
-            10,
+            20,
             moontest.planetsObj['earth'].initialX,
             moontest.planetsObj['earth'].initialY,
             'rgb(255,0,0)',
@@ -79,6 +79,33 @@ moontest = {
 
 
         moontest.planetsObj['moon'] = moon;
+        /*The Moon's moon*/
+        var moonsmoon = new moontest.Planet(
+            2 * Math.PI,
+            1,
+            1,
+            5,
+            moontest.planetsObj['moon'].initialX,
+            moontest.planetsObj['moon'].initialY,
+            'rgb(255,0,0)',
+            moontest.planetsObj['moon'].incrementer*10,
+            'moon'
+        );
+        moontest.planetsObj['moonsmoon'] = moonsmoon;
+
+        /*The Moon's moon's moon*/
+        var moonsmoonsmoon = new moontest.Planet(
+            2 * Math.PI,
+            -1,
+            1,
+            40,
+            moontest.planetsObj['moonsmoon'].initialX,
+            moontest.planetsObj['moonsmoon'].initialY,
+            'rgb(255,0,0)',
+            moontest.planetsObj['moonsmoon'].incrementer*2,
+            'moonsmoon'
+        );
+        moontest.planetsObj['moonsmoonsmoon'] = moonsmoonsmoon;
     },
 
     initUpdateFunc: function () {
@@ -86,7 +113,7 @@ moontest = {
             this.angle += this.sign * this.incrementer;
 
             if(this.orbiting !== ''){
-                this.currentX = moontest.planetsObj[this.orbiting].currentX + (this.rotationRadius) * Math.cos(this.angle);
+                this.currentX = moontest.planetsObj[this.orbiting].currentX + (this.rotationRadius) * (Math.cos(this.angle)/10);
                 this.currentY = moontest.planetsObj[this.orbiting].currentY + (this.rotationRadius) * Math.sin(this.angle);
             }else{
                 this.currentX = this.initialX + this.rotationRadius * Math.cos(this.angle);
